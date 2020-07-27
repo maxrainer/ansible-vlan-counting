@@ -1,0 +1,11 @@
+{% set customer_vlan_result = {} %}
+{% for (vlan,customer) in lookup.items() %}
+{% if customer not in customer_vlan_result and vlan in total_vlan_result %}
+{% set test = customer_vlan_result.update({customer: total_vlan_result[vlan] }) %}
+{% elif vlan in total_vlan_result %}
+{% set test = customer_vlan_result.update({customer: customer_vlan_result[customer] + total_vlan_result[vlan] }) %}
+{% endif %}
+{% endfor %}
+{% for (customer, count) in customer_vlan_result.items() %}
+{{ customer }}: {{ count }}
+{% endfor %}
