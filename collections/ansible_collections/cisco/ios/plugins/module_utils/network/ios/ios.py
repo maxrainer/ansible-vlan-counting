@@ -25,6 +25,9 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
 import json
 
 from ansible.module_utils._text import to_text
@@ -56,7 +59,10 @@ ios_provider_spec = {
 }
 ios_argument_spec = {
     "provider": dict(
-        type="dict", options=ios_provider_spec, removed_in_version=2.14
+        type="dict",
+        options=ios_provider_spec,
+        removed_at_date="2022-06-01",
+        removed_from_collection="cisco.ios",
     )
 }
 

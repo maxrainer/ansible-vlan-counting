@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "cisco",
   "name": "ios",
-  "version": "1.0.0",
+  "version": "1.0.1-dev6",
   "authors": [
    "Ansible Network Community (ansible-network)"
   ],
@@ -28,7 +28,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "0e824e3fe1ed7e6fab5d04f1cdc697d4f47ea99fe9ed0ebaeae6b9af594b6c20",
+  "chksum_sha256": "ee2734d657b5db3917fcaae62c3ff38f1fd99c44ca551a76df9f311fb8ee831a",
   "format": 1
  },
  "format": 1

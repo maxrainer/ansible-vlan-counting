@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
 DOCUMENTATION = """
 module: ios_ntp
 extends_documentation_fragment:
@@ -29,12 +32,15 @@ options:
   server:
     description:
     - Network address of NTP server.
+    type: str
   source_int:
     description:
     - Source interface for NTP packets.
+    type: str
   acl:
     description:
     - ACL for peer/server access restricition.
+    type: str
   logging:
     description:
     - Enable NTP logs. Data type boolean.
@@ -48,9 +54,11 @@ options:
   auth_key:
     description:
     - md5 NTP authentication key of tye 7.
+    type: str
   key_id:
     description:
     - auth_key id. Data type string
+    type: str
   state:
     description:
     - Manage the state of the resource.
@@ -58,6 +66,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 # Set new NTP server and source interface

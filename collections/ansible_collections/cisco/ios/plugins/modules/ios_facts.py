@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
 DOCUMENTATION = """
 module: ios_facts
 author:
@@ -41,6 +44,8 @@ options:
     - Use a value with an initial C(!) to collect all facts except that subset.
     required: false
     default: '!config'
+    type: list
+    elements: str
   gather_network_resources:
     description:
     - When supplied, this argument will restrict the facts collected to a given subset.
@@ -50,6 +55,8 @@ options:
       not be collected. Valid subsets are 'all', 'interfaces', 'l2_interfaces', 'vlans',
       'lag_interfaces', 'lacp', 'lacp_interfaces', 'lldp_global', 'lldp_interfaces',
       'l3_interfaces', 'acl_interfaces', 'static_routes', 'acls'.
+    type: list
+    elements: str
 """
 EXAMPLES = """
 - name: Gather all legacy facts

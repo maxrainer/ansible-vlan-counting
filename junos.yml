@@ -1,9 +1,11 @@
 ---
 
-- name: VLAN COUNT ON CISCO IOS SWITCH
+- name: VLAN COUNT ON Juniper JunOS SWITCH
   hosts: l2ios
   gather_facts: no
   connection: network_cli
+  vars:
+    - result_dir: ./results/
   tasks:
 
   - name: remove local files
@@ -11,10 +13,10 @@
       path: "{{ item }}"
       state: absent
     loop:
-      - ./results/customer_vlan.json
-      - ./results/total_vlan.json
-      - ./results/total_voice_vlan.json
-      - ./results/customer_voice_vlan.json
+      - "{{ result_dir }}customer_vlan.json"
+      - "{{ result_dir }}total_vlan.json"
+      - "{{ result_dir }}total_voice_vlan.json"
+      - "{{ result_dir }}customer_voice_vlan.json"
     run_once: true
 
   - name: read lookup variables from file
@@ -24,7 +26,7 @@
     run_once: true
 
   - name: gather interface facts
-    cisco.ios.ios_facts:
+    junipernetworks.junos.junos_facts:
       gather_network_resources: 
             - l2_interfaces
     become: true
@@ -48,7 +50,7 @@
   - name: generate total VLAN reports
     template: 
       src: "./templates/{{ item }}.j2"
-      dest: "./results/{{ item }}.json"
+      dest: "{{ result_dir }}{{ item }}.json"
     delegate_to: localhost
     run_once: true
     loop: 
@@ -57,7 +59,7 @@
   
   - name: read total VLAN infos
     include_vars: 
-      file: "./results/{{ item }}.json"
+      file: "{{ result_dir }}{{ item }}.json"
       name: "{{ item }}_result"
     run_once: true
     loop: 
@@ -67,7 +69,7 @@
   - name: generate customer VLAN report
     template: 
       src: ./templates/customer_vlan.j2
-      dest: ./results/customer_vlan.json
+      dest: "{{ result_dir }}customer_vlan.json"
     delegate_to: localhost
     run_once: true
 
@@ -77,7 +79,6 @@
   - name: generate customer VOICE VLAN report
     template: 
       src: ./templates/customer_vlan.j2
-      dest: ./results/customer_voice_vlan.json
+      dest: "{{ result_dir }}customer_voice_vlan.json"
     delegate_to: localhost
     run_once: true
-
