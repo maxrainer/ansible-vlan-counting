@@ -1,9 +1,8 @@
 ---
 
 - name: VLAN COUNT ON Juniper JunOS SWITCH
-  hosts: l2ios
+  hosts: l2device
   gather_facts: no
-  connection: network_cli
   vars:
     - result_dir: ./results/
   tasks:
@@ -27,10 +26,17 @@
 
   - name: gather interface facts
     junipernetworks.junos.junos_facts:
+      gather_subset: min
       gather_network_resources: 
             - l2_interfaces
-    become: true
     register: _intf_facts
+    vars:
+      ansible_command_timeout: 60
+  
+  - name: FACTS output
+    debug: 
+      var: _intf_facts
+      verbosity: 2
 
   - set_fact:
       _l2_interfaces: "{{ _intf_facts.ansible_facts.ansible_network_resources }}"
@@ -42,10 +48,12 @@
   - name: VLAN IDs
     debug:
       var: _vlan_ids
+      verbosity: 2
   
   - name: VOICE VLAN IDs
     debug:
       var: _voice_vlan_ids
+      verbosity: 2
 
   - name: generate total VLAN reports
     template: 

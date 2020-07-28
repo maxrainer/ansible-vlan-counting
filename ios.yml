@@ -1,7 +1,7 @@
 ---
 
 - name: VLAN COUNT ON CISCO IOS SWITCH
-  hosts: l2ios
+  hosts: l2device
   gather_facts: no
   connection: network_cli
   vars:
@@ -32,6 +32,11 @@
     become: true
     register: _intf_facts
 
+  - name: FACTS output
+    debug: 
+      var: _intf_facts
+      verbosity: 2
+
   - set_fact:
       _l2_interfaces: "{{ _intf_facts.ansible_facts.ansible_network_resources }}"
     
@@ -42,10 +47,12 @@
   - name: VLAN IDs
     debug:
       var: _vlan_ids
+      verbosity: 2
   
   - name: VOICE VLAN IDs
     debug:
       var: _voice_vlan_ids
+      verbosity: 2
 
   - name: generate total VLAN reports
     template: 

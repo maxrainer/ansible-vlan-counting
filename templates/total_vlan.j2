@@ -1,5 +1,5 @@
 {% set vlan_result = {} %}
-{% for host in groups['l2ios'] -%}
+{% for host in groups['l2device'] -%}
 {% for vlan in hostvars[host]._vlan_ids -%}    
 {% if vlan not in vlan_result %}
 {% set test =  vlan_result.update({vlan: 1}) %}
