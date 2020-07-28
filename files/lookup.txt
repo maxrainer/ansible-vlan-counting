@@ -1,6 +1,2 @@
-10: customerA
-11: customerA
-12: customerB
-13: customerC
-23: customerA
-24: customerVoiceOnly
+50: customerY
+818: customerZ
