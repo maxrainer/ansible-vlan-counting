@@ -1,6 +1,6 @@
 {% set customer_vlan_result = {} %}
 {% for (vlan,customer) in lookup.items() %}
-{% if vlan in total_vlan_result and vlan not in total_vlan_old %}
+{% if vlan in total_vlan_result and not vlan in total_vlan_old %}
 {% set test = customer_vlan_result.update({customer: total_vlan_result[vlan] }) %}
 {% elif customer not in customer_vlan_result and vlan in total_vlan_result %}
 {% set test = customer_vlan_result.update({customer: total_vlan_result[vlan] - total_vlan_old[vlan] }) %}
