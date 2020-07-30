@@ -7,6 +7,7 @@
     - result_dir: ./results/
     - compare: true
     - total_vlan_old: {}
+    - total_voice_vlan_old: {}
   tasks:
 
   - name: read previous total VLAN infos
@@ -33,42 +34,64 @@
       - "{{ result_dir }}customer_voice_vlan_diff.json"
     run_once: true
 
-  - name: read lookup variables from file
-    include_vars: 
-      file: ./files/lookup.txt
-      name: lookup
+  # - name: read lookup variables from file
+  #   include_vars: 
+  #     file: ./files/lookup.txt
+  #     name: lookup
+  #   run_once: true
+  - name: customer lookup variables 
+    debug: 
+      var: lookup
     run_once: true
+
 
   - name: gather interface facts for JunOS Devices
     junipernetworks.junos.junos_facts:
       gather_subset: min
       gather_network_resources: 
             - l2_interfaces
-    register: _intf_facts
+            - vlans
+    register: _junos_intf_facts
     vars:
       ansible_command_timeout: 60
     when: ansible_network_os == 'junos'
-
+    tags: vlan
+   
   - name: gather interface facts for Cisco IOS Devices
     cisco.ios.ios_facts:
       gather_subset: min
       gather_network_resources: 
             - l2_interfaces
+            - vlans
     register: _intf_facts
     when: ansible_network_os == 'ios'
     become: true
-  
-  - name: FACTS output
+
+  - name: facts output
     debug: 
-      var: _intf_facts
+      var: _junos_intf_facts
       verbosity: 2
 
   - set_fact:
       _l2_interfaces: "{{ _intf_facts.ansible_facts.ansible_network_resources }}"
+    when: _intf_facts.ansible_facts is defined 
+  
+  - set_fact: 
+      _l2_interfaces: "{{ _junos_intf_facts.ansible_facts.ansible_network_resources }}"
+    when: _junos_intf_facts.ansible_facts is defined
+    tags: vlan
+  
+  - name: L2 Interface variable
+    debug: 
+      var: _l2_interfaces
+      verbosity: 2
     
   - set_fact:  
       _vlan_ids: "{{ _l2_interfaces | json_query('l2_interfaces[*].access.vlan')  }}"
       _voice_vlan_ids:  "{{ _l2_interfaces | json_query('l2_interfaces[*].voice.vlan')  }}"
+      _vlans: "{{ _l2_interfaces | json_query('vlans[*].{key: name, value: vlan_id}') | items2dict }}"
+    when: _l2_interfaces is defined
+    tags: vlan
   
   - name: VLAN IDs
     debug:
@@ -79,6 +102,12 @@
     debug:
       var: _voice_vlan_ids
       verbosity: 2
+  
+  - name: VLANS
+    debug:
+      var: _vlans
+      verbosity: 2
+    tags: vlan
 
   - name: generate total VLAN reports
     template: 
@@ -115,7 +144,8 @@
     when: compare
     ignore_errors: true
 
-  - set_fact:
+  - name: prepare variables for voice vlan report
+    set_fact:
       total_vlan_result: "{{ total_voice_vlan_result }}"
       total_vlan_old: "{{ total_voice_vlan_old }}"
   
