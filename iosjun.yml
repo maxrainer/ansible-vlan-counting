@@ -60,12 +60,20 @@
   
   - name: OLD JUNOS DEVICES
     block:
-      - name: gather configuration for OLD JunOS Devices
-        include_vars:
-          file: junos.json
-          name: _junos_conf
+      # - name: gather configuration for OLD JunOS Devices
+      #   include_vars:
+      #     file: junos.json
+      #     name: _junos_conf
+      # - set_fact:
+      #     _junos_config: "{{ _junos_conf.configuration[0] }}"
+      - name: get config from JunOS device
+        junipernetworks.junos.junos_command:
+          commands: 
+            - "show configuration interfaces"
+          display: json
+        register: _junos_conf
       - set_fact:
-          _junos_config: "{{ _junos_conf.configuration[0] }}"
+          _junos_config: "{{ _junos_conf.stdout[0].configuration[0] }}"
       - set_fact:
           _vlan_ids: "{{ _junos_config | json_query('interfaces[0].interface[*].unit[0].family[0].\"ethernet-switching\"[0].vlan[0].members[0].data') }}"
           _voice_vlan_ids: "{{ _junos_config | json_query('\"ethernet-switching-options\"[0].voip[0].interface[*].vlan[0].data') }}"
