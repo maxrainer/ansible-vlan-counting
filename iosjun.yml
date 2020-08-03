@@ -34,16 +34,16 @@
       - "{{ result_dir }}customer_voice_vlan_diff.json"
     run_once: true
 
-  # - name: read lookup variables from file
-  #   include_vars: 
-  #     file: ./files/lookup.txt
-  #     name: lookup
-  #   run_once: true
-  - name: customer lookup variables 
-    debug: 
-      var: lookup
-      verbosity: 2
+  - name: read lookup variables from file
+    include_vars: 
+      file: ./files/lookup.txt
+      name: lookup
     run_once: true
+  # - name: customer lookup variables 
+  #   debug: 
+  #     var: lookup
+  #     verbosity: 2
+  #   run_once: true
 
 
   - name: gather interface facts for JunOS Devices

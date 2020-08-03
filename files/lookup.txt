@@ -3,3 +3,6 @@
 868: customerX
 3205: voiceCustomerXY
 3204: voiceCustomerZZ
+369: customerA
+3219: customerB
+3279: customerB
