@@ -1,0 +1,25 @@
+- name: VLAN COUNT ON Juniper JunOS SWITCH
+  hosts: junos
+  gather_facts: no
+  vars:
+    - result_dir: ./results/
+  tasks:
+
+  - name: grep configuration as JSON
+    junos_command:
+      commands: 
+        - "show configuration interfaces"
+      display: json
+    register: _config_old
+
+  - set_fact:
+      _intf_config: "{{ _config_old.stdout[0].configuration.interfaces }}"
+
+  # - debug:
+  #     var: _intf_config
+  
+  - set_fact: 
+      _intf_query: "{{ _intf_config | json_query('interface[*].unit[0].family.\"ethernet-switching\".vlan.members[0]') }}"
+
+  - debug:
+      var: _intf_query

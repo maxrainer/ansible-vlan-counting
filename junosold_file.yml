@@ -1,0 +1,31 @@
+- name: VLAN COUNT ON Juniper JunOS SWITCH
+  hosts: junos
+  gather_facts: no
+  vars:
+    - result_dir: ./results/
+  tasks:
+
+
+  
+
+  - set_fact: 
+       _dir: "{{ playbook_dir }}/config/junos.json"
+  
+  - include_vars:
+      file: junos.json
+      name: _junos_conf
+
+  - set_fact: 
+      _intf_config: "{{ _junos_conf.configuration[0].interfaces[0] }}"
+
+  - debug:
+      var: _intf_config
+
+  - set_fact: 
+      #_intf_query: "{{ _intf_config | json_query('interface[*].unit[0].family.\"ethernet-switching\".vlan.members[0]') }}"
+      _intf_query: "{{ _intf_config | json_query('interface[*].unit[0].family[0].\"ethernet-switching\"[0].vlan[0].members[0].data') }}"
+      _intf_query2: "{{ _junos_conf.configuration[0] | json_query('\"ethernet-switching-options\"[0].voip[0].interface[*].vlan[0].data') }}"
+      _intf_query3: "{{ _junos_conf.configuration[0] | json_query('vlans[0].vlan[*].{key: name.data, value: \"vlan-id\"[0].data}') | items2dict }}"
+
+  - debug:
+      var: _intf_query3

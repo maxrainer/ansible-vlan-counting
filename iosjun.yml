@@ -55,15 +55,28 @@
     register: _junos_intf_facts
     vars:
       ansible_command_timeout: 60
-    when: ansible_network_os == 'junos'
+    when: ansible_network_os == 'junos' and not inventory_hostname in groups['old']
     tags: vlan
+  
+  - name: OLD JUNOS DEVICES
+    block:
+      - name: gather configuration for OLD JunOS Devices
+        include_vars:
+          file: junos.json
+          name: _junos_conf
+      - set_fact:
+          _junos_config: "{{ _junos_conf.configuration[0] }}"
+      - set_fact:
+          _vlan_ids: "{{ _junos_config | json_query('interfaces[0].interface[*].unit[0].family[0].\"ethernet-switching\"[0].vlan[0].members[0].data') }}"
+          _voice_vlan_ids: "{{ _junos_config | json_query('\"ethernet-switching-options\"[0].voip[0].interface[*].vlan[0].data') }}"
+          _vlans: "{{ _junos_config | json_query('vlans[0].vlan[*].{key: name.data, value: \"vlan-id\"[0].data}') | items2dict }}"
+    when: ansible_network_os == 'junos' and inventory_hostname in groups['old']
    
   - name: gather interface facts for Cisco IOS Devices
     cisco.ios.ios_facts:
-      gather_subset: min
       gather_network_resources: 
-            - l2_interfaces
-            - vlans
+        - l2_interfaces
+        - vlans
     register: _intf_facts
     when: ansible_network_os == 'ios'
     become: true
