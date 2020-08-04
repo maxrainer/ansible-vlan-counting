@@ -1,13 +1,10 @@
-- name: VLAN COUNT ON Juniper JunOS SWITCH
+- name: VLAN COUNT ON OLD Juniper JunOS SWITCH (junos v15) 
   hosts: junos
   gather_facts: no
   vars:
     - result_dir: ./results/
   tasks:
-
-
   
-
   - set_fact: 
        _dir: "{{ playbook_dir }}/config/junos.json"
   

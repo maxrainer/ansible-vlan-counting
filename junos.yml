@@ -1,6 +1,6 @@
 ---
 
-- name: VLAN COUNT ON Juniper JunOS SWITCH
+- name: VLAN COUNT ON Juniper JunOS SWITCH (testing only)
   hosts: l2device
   gather_facts: no
   vars:
